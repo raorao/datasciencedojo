@@ -17,18 +17,20 @@ boxplot(Sepal.Length ~ Species, data=iris,
     main="Sepal Length for Various Species", xlab="Species", ylab="Sepal Length"
 )
 
+# Box Plots with Notches
 boxplot(Sepal.Length ~ Species, data=iris, 
     main="Sepal Length for Various Species", xlab="Species", ylab="Sepal Length", 
     notch=TRUE
 )
 
+# Coloring Your Plots
 boxplot(Sepal.Length ~ Species, data=iris, 
     main="Sepal Length for Various Species", xlab="Species",  ylab="Sepal Length", 
     notch=TRUE, col=c("blue","green","red")
 )
 boxplot(Petal.Length ~ Species, data=iris, 
-        main="Petal Length for Various Species", xlab="Species",  ylab="Sepal Length", 
-        notch=TRUE, col=c("blue","green","red")
+    main="Petal Length for Various Species", xlab="Species",  ylab="Sepal Length", 
+    notch=TRUE, col=c("blue","green","red")
 )
 
 # Saving Plots. Can also use the "Plot" window in R Studio
@@ -42,12 +44,18 @@ boxplot(Sepal.Length ~ Species, data=iris,
 
 dev.off() # Returns plot to the IDE
 
-# Lattice Histogram & Density
+# Lattice Histogram 
 histogram(iris$Petal.Length, breaks=10, type="count", main="Histogram")
-    type="percent", n=150
+
+# Lattice Density
+densityplot(
+  iris$Petal.Length,
+  main="Kernel Density of Petal Length", 
+  type="percent", 
+  n=150
 )
 
-
+# Lattice: Multiple Density Plots
 densityplot(~ Petal.Width, data=iris, groups=Species, plot.points=F, 
     ylab=list(label="Kernel Density of Petal Width", fontsize=20), xlab="", 
     main=list(label="Density of Petal Width by Species", fontsize=24), 
@@ -59,9 +67,31 @@ densityplot(~ Petal.Width, data=iris, groups=Species, plot.points=F,
 # Petal Length vs Petal Width using core. Then recreate the same graphs in 
 # lattice, this time coloring the individual points by species.
 
-# Extended scatter plots
-plot(Petal.Length ~ Petal.Width, data=iris, main="Petal Width vs Length")
+# Core Graphics
+plot(iris$Sepal.Length,
+     iris$Sepal.Width, 
+     xlab="Sepal Length", 
+     ylab="Sepal Width"
+)
 
+# Lattice Graphics
+xyplot(
+  Sepal.Width ~
+  Sepal.Length, 
+  data=iris,
+  groups=Species,
+  auto.key=list(
+    corner=c(0,0),
+    x=0, 
+    y=0.85, 
+    cex=1.5
+  ), 
+  cex=1.5,
+  scales=list(cex=1.5)
+)
+
+# Add a regression line
+plot(Petal.Length ~ Petal.Width, data=iris, main="Petal Width vs Length")
 abline(lm(Petal.Length ~ Petal.Width, data=iris), col="red", lwd=2)
 
 # Scatter plot matrix
@@ -79,19 +109,32 @@ splom(iris[1:4], groups=iris$Species, panel=panel.superpose,
     )
 )
 
+# Enhanced Scatter Plot Matrices
 library(GGally)
-ggpairs(iris, color="Species")
+ggpairs(iris, ggplot2::aes(color=Species))
 
 # Exercise 2:
 # Load the mtcars dataset. If the goal is to predict the MPG column based on the
 # other columns, create 2 different plots which illustrate useful relationships
 # in the data.
 
+# plot 1
+densityplot(
+  ~ mpg, 
+  data=mtcars, 
+  groups=cyl, 
+  plot.points=F, 
+  auto.key=list(columns=3, title="Cylinders")
+)
+
+# plot 2
+plot(mpg ~ disp, data=mtcars)
+abline(lm(mpg ~ disp, data=mtcars), col="red")
+
 ## ggplot2 introduction ##
 library(ggplot2)
 
 data(diamonds)
-head(diamonds)
 
 # Basic plot types
 ggplot(diamonds, aes(x=carat)) + geom_histogram()
@@ -103,7 +146,6 @@ ggplot(diamonds, aes(x=carat, y=price)) + geom_point()
 # ggplot object
 # Store the plot for future modification
 g <- ggplot(diamonds, aes(x=carat, y=price))
-
 # Second aesthetic adds settings specific to geom_point layer
 g + geom_point(aes(color=color))
 
@@ -154,8 +196,44 @@ summary(titanic[titanic$Survived=="Survived",]$Age)
 # Create 2 box plots of Age, one segmented by Sex, the other by Survived
 # Create a histogram of Age
 # Create 2 density plot of Age, also segmented by Sex and Survived
+boxplot(Age ~ Sex, data=titanic,
+        main="Age Distribution By Gender",
+        col=c("red","green"), notch=T)
+
+boxplot(Age ~ Survived, data=titanic,
+        main="Age Distribution By Survival",
+        col=c("red","green"), notch=T, ylab="Age")
+
+hist(titanic$Age, col="blue", breaks=12,
+    xlab="Distribution of Age", 
+    ylab="Frequency of Bucket", 
+    main="Distribution of Passenger Ages on Titanic")
+
+densityplot(~ Age, data=titanic,
+            groups=Survived, plot.points=F, lwd=3,
+            auto.key=list(corner=c(0,0), x=0.7, y=0.8))
+
+densityplot(~ Age, data=titanic,
+            groups=Sex, plot.points=F, lwd=3,
+            auto.key=list(corner=c(0,0), x=0.7, y=0.8))
+
+density(titanic.age.cleaned) # NAs prevent this
+d <- density(na.omit(titanic$Age))
+plot(d, main="Kernel Density of Age")
+polygon(d, col="red", border="blue")
 
 # Exercise 4:
 # Create a new column "Child", and assign each row either "Adult" or "Child"
 # based on a consistent metric. Then use ggplot to create a series of box plots
 # relating Fare, Child, Sex, and Survived
+child <- titanic$Age
+child[child < 13] <- 0
+child[child >= 13] <- 1
+titanic$Child <- as.factor(child)
+levels(titanic$Child)
+levels(titanic$Child) <- c("Child", "Adult")
+g <- ggplot(data=titanic[!is.na(titanic$Child),],
+            aes(x=Child, y=Fare))
+g.b <- g + geom_boxplot()
+g.b + facet_grid(Sex ~ Survived)
+
