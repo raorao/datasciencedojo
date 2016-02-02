@@ -34,7 +34,8 @@ limit 20;
 set hive.cli.print.header=true;
 select *
 from hivesampletable
-where querydwelltime > 20;
+where querydwelltime > 20
+limit 20;
 
 --3. What was the average dwell time? Run the following
 --query to find out.
