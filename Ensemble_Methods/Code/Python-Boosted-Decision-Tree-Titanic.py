@@ -13,6 +13,7 @@ from sklearn import metrics
 from sklearn_pandas import DataFrameMapper
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Import data into a pandas data frame. Remember to set your working directory!
 titanic = pd.read_csv('Datasets/titanic.csv')
@@ -33,6 +34,7 @@ titanic.boxplot(by='Survived')
 pd.tools.plotting.scatter_matrix(titanic)
 titanic.describe()
 titanic.loc[:,['Survived', 'Pclass', 'Embarked', 'Sex']].describe()
+plt.show()
 
 ## Replace missing values in Age with mean and Embarked with NA
 titanic.loc[pd.isnull(titanic['Age']), 'Age'] = titanic['Age'].mean()

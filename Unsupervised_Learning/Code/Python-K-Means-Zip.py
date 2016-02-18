@@ -43,6 +43,7 @@ for n_cluster in clusters:
     zip_skree_inertia.append(km_model.inertia_)
 
 plt.plot(clusters,zip_skree_inertia, 'bo')
+plt.show()
 
 ## Exercise:
 ## Based on the scree plot, how many clusters would you choose to use if you didn't know there

@@ -24,15 +24,16 @@ print(zip_test.shape)
 
 ## Check the first few rows
 ## Column 1 is the number label, 2 -> 257 are pixel grey levels
-zip_train.head()
+print(zip_train.head())
 
 ## Label target column as 'target'
 zip_train.rename(columns={0:'target'}, inplace=True)
 zip_test.rename(columns={0:'target'}, inplace=True)
 ## Visualize a number
-zip_example = zip_train.loc[4,1:].values
+zip_example = zip_train.iloc[4,1:].values
 zip_example.shape = (16,16)
 plt.imshow(zip_example, interpolation='none')
+plt.show()
 
 # Train model
 ## Filter out the "2" and "3" labels from the training and test sets
@@ -52,9 +53,9 @@ zip_log_cm = metrics.confusion_matrix(zip_test['target'], zip_log_pred)
 print(zip_log_cm)
 
 zip_log_acc = metrics.accuracy_score(zip_test['target'], zip_log_pred)
-zip_log_prec = metrics.precision_score(zip_test['target'], zip_log_pred)
-zip_log_rec = metrics.recall_score(zip_test['target'], zip_log_pred)
-zip_log_f1 = metrics.f1_score(zip_test['target'], zip_log_pred)
+zip_log_prec = metrics.precision_score(zip_test['target'], zip_log_pred, pos_label=3)
+zip_log_rec = metrics.recall_score(zip_test['target'], zip_log_pred, pos_label=3)
+zip_log_f1 = metrics.f1_score(zip_test['target'], zip_log_pred, pos_label=3)
 
 print("Accuracy: " + str(zip_log_acc) + "\nPrecision: " + str(zip_log_prec)
       + "\nRecall: " + str(zip_log_rec) + "\nF1 score: " + str(zip_log_f1))

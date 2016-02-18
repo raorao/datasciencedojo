@@ -11,9 +11,10 @@ from sklearn.datasets import load_iris
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics, tree
 from sklearn.externals.six import StringIO
+import pydotplus
 import pandas as pd
 import numpy as np
-import pydotplus
+import matplotlib.pyplot as plt
 
 
 # Load the iris dataset into memory
@@ -27,6 +28,7 @@ irisDF['Species'] = pd.Categorical.from_codes(iris.target, iris.target_names)
 print(iris.DESCR)
 irisDF.boxplot(by='Species')
 pd.tools.plotting.scatter_matrix(irisDF.iloc[:,:4])
+plt.show()
 
 # Split Data for training and test
 np.random.seed(27)

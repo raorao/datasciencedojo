@@ -7,11 +7,14 @@ Data Source: bootcamp root/Datasets/titanic.csv
 Python Version: 3.4+
 Packages: scikit-learn, pandas, numpy
 """
+from math import sqrt
+
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, RidgeCV
 from sklearn import metrics
+
 import pandas as pd
 import numpy as np
-from math import sqrt
+import matplotlib.pyplot as plt
 
 # Read in the data. Remember to set your working directory!
 ozone = pd.read_csv('Datasets/ozone.data', delimiter='\t')
@@ -19,6 +22,7 @@ ozone = pd.read_csv('Datasets/ozone.data', delimiter='\t')
 # Data Visualization
 ozone.describe()
 pd.tools.plotting.scatter_matrix(ozone)
+plt.show()
 
 # Split data into training and test
 np.random.seed(27)

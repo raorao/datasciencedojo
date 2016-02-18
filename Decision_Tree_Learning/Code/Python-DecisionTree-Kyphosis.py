@@ -10,9 +10,10 @@ Packages: scikit-learn, pandas, numpy, pydotplus
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics, tree
 from sklearn.externals.six import StringIO
+import pydotplus
 import pandas as pd
 import numpy as np
-import pydotplus
+import matplotlib.pyplot as plt
 
 # Import data. Remember to set your working directory to the bootcamp root.
 kyphosis = pd.read_csv('Datasets/kyphosis.csv', index_col=0)
@@ -22,6 +23,7 @@ kyphosis["Kyphosis"] = pd.Categorical(kyphosis["Kyphosis"],
 # Data exploration and visualization
 kyphosis.boxplot(by='Kyphosis')
 pd.tools.plotting.scatter_matrix(kyphosis.iloc[:,1:])
+plt.show()
 
 # Randomly choose 60% of the data as training data (Why 60% instead of 70%?)
 np.random.seed(27)
