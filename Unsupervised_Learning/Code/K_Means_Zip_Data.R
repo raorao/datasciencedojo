@@ -31,7 +31,7 @@ summary(zip.km.model)
 zip.km.clusters <- lapply(1:10, function(nc)zip.data.subset[zip.km.model$cluster==nc, 1])
 print(zip.km.clusters)
 ##  plot to visualize the clusters
-par(mfrow=c(1,2))
+par(mfrow=c(1,1))
 plotcluster(zip.train, zip.data.subset$V1, xlab="dc1", ylab="dc2", method="dc")
 
 
