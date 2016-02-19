@@ -1,15 +1,19 @@
-###################################################################################
-## This code is part of Data Science Dojo's bootcamp
-## Copyright (C) 2015
-## 
-## Objective: Understand AB Testing by two simple examples
-## Data source:
-## Dwell_Time_VersionA.csv and Dwell_Time_VersionB.csv at:
-## https://github.com/datasciencedojo/bootcamp/tree/master/Online_Experimentation_and_AB_Testing
-## Please install "ggplot2" package: install.packages("ggplot2")
-###################################################################################
+"""
+This code is part of Data Science Dojo's bootcamp
+Copyright (C) 2016
 
-library(ggplot2)
+Objective: Understand AB Testing by two simple examples
+Data source: Dwell_Time_VersionA.csv and Dwell_Time_VersionB.csv at:
+    https://github.com/datasciencedojo/bootcamp/tree/master/Online_Experimentation_and_AB_Testing
+Python Version: 3.4+
+Packages: pandas, statsmodels, matplotlib
+"""
+
+from statsmodels.stats.proportion import proportions_chisquare, proportion_effectsize
+from statsmodels.stats.power import NormalIndPower, tt_ind_solve_power
+from statsmodels.stats.weightstats import ttest_ind
+import pandas as pd
+import matplotlib.pyplot as plt
 
 ###################################################################################
 ## 1. AB Test of Proportions
@@ -51,32 +55,33 @@ library(ggplot2)
 ## conversion rate? What is the significance level?
 ###################################################################################
 
-## assign some variables
-visits.per.group <- 298234/2
-success.A <- 8365
-success.B <- 8604
-conversion.rate.A <- success.A / visits.per.group
-conversion.rate.B <- success.B / visits.per.group
+## Assign some variables
+visits_per_group = 298234/2
+success_A = 8365
+success_B = 8604
+conversion_rate_A = success_A / visits_per_group
+conversion_rate_B = success_B / visits_per_group
+
 ## Perform a proportional hypothesis test
 ## H0 (null hypothesis): conversion rates of version A and B are the same
 ## H1 (alternative hypothesis): conversion rates of version A and B are different
-proportion.test.results <- prop.test(x=c(success.A, success.B), n=c(visits.per.group, visits.per.group),
-          alternative = "two.sided",
-          conf.level = 0.95, correct = TRUE)
-## Examine the output of the prop.test function.
-## If the target p-value is 0.05, what is your conclusion? Do you accept or reject H0?
+(chi2, chi2_p_value, expected) = proportions_chisquare(count=[success_A, success_B],
+                                                  nobs=[visits_per_group, visits_per_group])
+print("chi2: %f \t p_value: %f" % (chi2, chi2_p_value))
+
+## Examine the output of the chi2_contingency function.
+## If the target p_value is 0.05, what is your conclusion? Do you accept or reject H0?
 
 ## Note that this test only tells you whether A & B have different conversion rates, not
 ## which is larger. In this case, since A & B had the same number of visits, this is easy to 
 ## determine. However, if you only showed B to 10% of your visitors, you may want to use a
-## one-sided test instead. You can investigate the difference by changing the alternative
-## argument to either "less" or "greater" for A < B and A > B respectively
+## one-sided test instead.
 
 ## Your team also wants to know the "power" of the above results. Since they want to
 ## know if H1 is true, what is the possiblity that we accept H0 when H1 is true?
-## The power can be obtained using power.prop.test function.
-proportion.test.power <- power.prop.test(n=visits.per.group, p1=conversion.rate.A, p2=conversion.rate.B, sig.level=0.05)
-print(proportion.test.power)
+## The power can be obtained using the GofChisquarePower.solve_power function
+effect_size = proportion_effectsize(prop1=conversion_rate_A, prop2=conversion_rate_B)
+proportion_test_power = NormalIndPower().solve_power(effect_size=effect_size, nobs1=visits_per_group, alpha=0.05)
 
 ###################################################################################
 ## 2. AB Test of Means
@@ -87,30 +92,28 @@ print(proportion.test.power)
 ###################################################################################
 ## Load the data
 ## Remember to set your working directory to the bootcamp base folder
-dwell.time.versionA <- read.csv("Datasets/Dwell_Time/Dwell_Time_VersionA.csv")
-dwell.time.versionB <- read.csv("Datasets/Dwell_Time/Dwell_Time_VersionB.csv")
+dwell_time_A = pd.read_csv('Datasets/Dwell_Time/Dwell_Time_VersionA.csv')
+dwell_time_B = pd.read_csv('Datasets/Dwell_Time/Dwell_Time_VersionB.csv')
 
 ## Visualize the data
 ## Calculate mean and standard deviation (sd) of dwell time on the web pages
-mean.A <- round(mean(dwell.time.versionA$dwellTime), 2)
-sd.A <- round(sd(dwell.time.versionA$dwellTime), 2)
-mean.B <- round(mean(dwell.time.versionB$dwellTime), 2)
-sd.B <- round(sd(dwell.time.versionB$dwellTime), 2)
+mean_A = round(dwell_time_A['dwellTime'].mean(), 2)
+sd_A = round(dwell_time_A['dwellTime'].std(), 2)
+mean_B = round(dwell_time_B['dwellTime'].mean(), 2)
+sd_B = round(dwell_time_B['dwellTime'].std(), 2)
+mean_sd_AB = pd.DataFrame({'mean': [mean_A, mean_B], 'sd': [sd_A, sd_B]}, index=['A', 'B'])
+print(mean_sd_AB)
 
-mean.sd.AB <- data.frame(mean = c(mean.A, mean.B), sd = c(sd.A, sd.B))
-row.names(mean.sd.AB) <- c("Version A", "Version B")
-print(mean.sd.AB)
-
-## plot the density of dwell time of version A and B
-#Put the sample data into a data frame
-dat <- data.frame(Dwell.Time= c(dwell.time.versionA$dwellTime, dwell.time.versionB$dwellTime), Version = c(rep("version A", visits.per.group), rep("version B", visits.per.group)))
-#Create a density plot of the dwell times for each version
-ggplot(dat, aes(x = Dwell.Time, fill = Version)) + geom_density(alpha = 0.5) + ggtitle("Comparison of dwell time densities on web page version A and B")
+## Plot the densities of dwell times A and B
+dwell_times = pd.DataFrame({'A': dwell_time_A['dwellTime'], 'B': dwell_time_B['dwellTime']})
+dwell_times.plot(kind='kde', color=['r', 'b'])
+plt.show()
 
 ## For this question, we use a t-test.
-t.test.results <- t.test(dwell.time.versionA$dwellTime, dwell.time.versionB$dwellTime, alternative="two.sided", conf.level=0.95)
+(tstat, t_p_value, t_df) = ttest_ind(x1=dwell_time_A, x2=dwell_time_B, alternative='two-sided')
+print("tstat: %f \t p_value: %e" % (tstat[1], t_p_value[1]))
 ## Is the dwell time different between version A and B (with significance level 0.05)?
-## What is the power of this conclusion? Use the power.t.test function to find out.
+## What is the power of this conclusion? Use the tt_ind_solve_power function to find out.
 
 ###################################################################################
 ## EXERCISE:
