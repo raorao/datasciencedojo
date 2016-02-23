@@ -14,7 +14,7 @@ library(lsa)
 data(crude)
 
 # Explore the dataset
-str(crude)
+summary(crude)
 
 # Remove punctuation, apply a stemmer, and build a document-term matrix using TF-IDF
 crude.dt <- DocumentTermMatrix(crude, control=list(weighting=weightTfIdf,
@@ -22,6 +22,9 @@ crude.dt <- DocumentTermMatrix(crude, control=list(weighting=weightTfIdf,
                                                    stemming=T))
 
 # Inspect the document-term matrix
-inspect(crude.dt)
+print(crude.dt)
+#inspect(crude.dt)
 
 #Compute a matrix of cosine similarity scores between each document pair
+crude.cos <- cosine(as.matrix(t(crude.dt)))
+print(crude.cos)
