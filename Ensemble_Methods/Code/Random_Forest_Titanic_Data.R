@@ -67,8 +67,8 @@ titanic.rf.F1 <- 2 * titanic.rf.precision * titanic.rf.recall / (titanic.rf.prec
 print(titanic.rf.F1)
 # We can also report probabilities
 titanic.rf.predictions.prob <- predict(titanic.rf.model, titanic.test, type="prob")
-head(titanic.rf.predictions.prob)
-head(titanic.test)
+print(head(titanic.rf.predictions.prob))
+print(head(titanic.test))
 
 ## show variable importance
 importance(titanic.rf.model)

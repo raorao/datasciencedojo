@@ -1,3 +1,11 @@
+###################################################################################
+## This code is part of Data Science Dojo's bootcamp
+## Copyright (C) 2015
+##
+## Objective: Explore and visualize data using R
+## Please install "lattice" package: install.packages("lattice")
+## Please install "ggplot2" package: install.packages("ggplot2")
+###################################################################################
 # Script for following along in Data Exploration and Visualization module
 # Copy-paste line by line or use the "Run" button in R Studio
 library(lattice)
@@ -42,7 +50,7 @@ boxplot(Sepal.Length ~ Species, data=iris,
     notch=TRUE, col=c("blue","green","red")
 )
 
-dev.off() # Returns plot to the IDE
+dev.off() # Returns plot to the IDE and closes file
 
 # Lattice Histogram 
 histogram(iris$Petal.Length, breaks=10, type="count", main="Histogram")
@@ -56,8 +64,8 @@ densityplot(
 )
 
 # Lattice: Multiple Density Plots
-densityplot(~ Petal.Width, data=iris, groups=Species, plot.points=F, 
-    ylab=list(label="Kernel Density of Petal Width", fontsize=20), xlab="", 
+densityplot(~ Petal.Width, data=iris, groups=Species, 
+    xlab=list(label="Kernel Density of Petal Width", fontsize=20), ylab="", 
     main=list(label="Density of Petal Width by Species", fontsize=24), 
     auto.key=list(corner=c(0,0), x=0.4, y=0.8, cex=2), scales=list(cex=1.5)
 ) # cex defines a scale multiplier for text
