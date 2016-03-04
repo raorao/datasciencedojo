@@ -38,8 +38,8 @@ movie_tfidf = tfidf.fit_transform(movie_docs)
 # Examine non-zero entries in TF-IDF matrix
 find(movie_tfidf[1:6,1:10])
 
-# Calculate pair-wise cosine similarities between first 2000 documents
-movie_cosine = np.empty((2000, 2000))
+# Calculate pair-wise cosine similarities between first 200 documents
+movie_cosine = np.empty((200, 200))
 for ii in range(0, movie_cosine.shape[0]):
     for jj in range(ii, movie_cosine.shape[0]):
         movie_cosine[ii, jj] = cosine(movie_tfidf.getcol(ii).toarray(), movie_tfidf.getcol(jj).toarray())
