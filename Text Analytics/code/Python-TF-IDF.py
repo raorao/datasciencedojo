@@ -13,7 +13,10 @@ from scipy.spatial.distance import cosine
 import numpy as np
 import nltk 
 
-# Import the sample dataset
+# Download the nltk modules you need. You only need to run these lines once.
+nltk.download('movie_reviews')
+nltk.download('punkt')
+
 from nltk.corpus import movie_reviews
 
 # Description of data set
