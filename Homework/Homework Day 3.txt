@@ -1,0 +1,9 @@
+1) Using the Adult dataset from Day 1 and Day 2, build a models to predict the Income column using the randomForest and bst packages. For bst, you will have to modify the way the data is stored; look at ?bst and the "Boosted_Decision_Tree_Titanic_Data.R" code example in the Ensemble Methods folder.
+
+2) Tune your models; be sure to try modifying at least two parameters. You may also want to use the variable importance information provided by randomForest for feature selection.
+
+3) Compare the performance of your randomForest and bst models to your rpart models from Day 2. Do the emsembles outperform the single decision tree in bias or variance? Are they better only on a specific metric?
+
+4) Review the SQL Refresher in the Homework folder if you haven't used SQL before or if your SQL skills are rusty.
+
+5) Create an account at www.kaggle.com and submit your username to the instructors using the form on the Kaggle Competition page.
