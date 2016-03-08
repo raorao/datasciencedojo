@@ -48,7 +48,7 @@ spam_test['spam'].describe()
 
 ## Build model
 spam_nb_clf = GaussianNB()
-spam_nb_clf = spam_nb_clf.fit(spam_train.iloc[:,:56], spam_train['spam'])
+spam_nb_clf = spam_nb_clf.fit(spam_train.drop('spam', axis=1), spam_train['spam'])
 
 # Predict training classes and evaluate model
 spam_nb_pred = spam_nb_clf.predict(spam_test.iloc[:,:56])
