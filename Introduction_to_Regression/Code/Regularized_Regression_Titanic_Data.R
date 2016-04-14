@@ -39,7 +39,7 @@ dim(titanic.test)
 ## fit a logistic regression model to training set
 ## glmnet requires a matrix input to the model function. 
 ## See ?glmnet and ?cv.glmnet for the documentation
-## alpha determines the regularization penalty - 1 is lasso, 0 is ridge regression
+## alpha determines the regularization penalty: 1 is lasso, 0 is ridge regression
 ## glmnet uses cross validation to determine the best lambda value
 x.train <- model.matrix(Survived ~ ., data=titanic.train)[,-1] 
 titanic.rl.model <- cv.glmnet(x.train, titanic.train$Survived, family="binomial", alpha=1)
